@@ -1,23 +1,53 @@
-import {DEPOSIT, WITHDRAW} from "../actions/accountActions";
-import {PUT_QUOTE, QUOTE_ERROR, QUOTE_REQUEST} from "../actions/quoteAction";
+import {createSlice} from "@reduxjs/toolkit";
 
-function accountReducer(state, action) {
-    switch (action.type) {
-        case DEPOSIT:
-            return {...state, balance: state.balance + action.payload};
-        case WITHDRAW:
-            const res = state.balance - action.payload;
-            return {...state, balance: res < 0 ? state.balance : res};
-        case PUT_QUOTE:
-            return {...state, quote: action.payload};
-        case QUOTE_REQUEST:
-            return {...state, quote: action.payload};
-        case QUOTE_ERROR:
-            return {...state, quote: action.payload};
-
-        default:
-            return state;
-    }
+const initialState = {
+    balance: 0,
+    quote: "Future is coming"
 }
 
-export default accountReducer
+const accountSlice = createSlice({
+    name: "account",
+    initialState,
+    reducers: {
+        depositAction: (account, action) => {
+            account.balance = account.balance + action.payload;
+        },
+        withdrawAction: (account, action) => {
+            const res = account.balance - action.payload;
+            account.balance = (res < 0) ? account.balance : res;
+        },
+        putQuoteAction: (account, action) => {
+            account.quote = action.payload;
+        },
+        quoteRequestAction: (account, action) => {
+            account.quote = action.payload;
+        },
+        quoteErrorAction: (account, action) => {
+            account.quote = action.payload;
+        },
+    },
+});
+
+const {actions, reducer} = accountSlice;
+export const {
+    depositAction,
+    withdrawAction,
+    putQuoteAction,
+    quoteRequestAction,
+    quoteErrorAction,
+} = actions;
+export const accountReducer = reducer;
+
+export const getQuoteAction = () => {
+    return (dispatch) => {
+        dispatch(quoteRequestAction("Loading..."));
+        fetch("https://api.kanye.rest/")
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                dispatch(quoteErrorAction());
+            })
+            .then(data => {dispatch(putQuoteAction(data.quote))})
+            .catch(e => dispatch(quoteErrorAction(e.toString())))
+    }
+};

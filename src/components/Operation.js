@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import {depositAction, withdrawAction} from "../actions/accountActions";
 import {useDispatch} from "react-redux";
-import {getQuoteAction} from "../actions/quoteAction";
+import {depositAction, getQuoteAction, withdrawAction} from "../reducers/accountReducer";
 
 const Operation = () => {
     const dispatch = useDispatch();

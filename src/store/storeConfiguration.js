@@ -1,17 +1,8 @@
-import accountReducer from "../reducers/accountReducer";
-import {applyMiddleware, createStore} from "redux";
-import {logger} from "redux-logger/src";
-import thunk from "redux-thunk";
+import {configureStore} from "@reduxjs/toolkit";
+import {accountReducer} from "../reducers/accountReducer";
 
-const initialState = {
-    balance: 0,
-    quote: "Future is coming"
-}
-
-const store = createStore(
-    accountReducer,
-    initialState,
-    applyMiddleware(thunk, logger)
-);
-
-export default store;
+export const store = configureStore({
+    reducer: {
+        account: accountReducer
+    }
+});
